@@ -1,2 +1,2 @@
 # spring-boot-study
-auther dengh
+author dengh
