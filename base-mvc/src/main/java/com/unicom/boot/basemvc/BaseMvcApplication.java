@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class BaseMvcApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(BaseMvcApplication.class, args);
 	}
 

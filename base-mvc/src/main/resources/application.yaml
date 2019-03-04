@@ -1,0 +1,69 @@
+server:
+  port: 8090
+  servlet:
+      context-path: /baseMvc
+spring:
+  datasource:
+    druid:
+# 基础连接信息
+      url: jdbc:mysql://127.0.0.1/springbootStudy?serverTimezone=GMT%2B8 # 或spring.datasource.url=
+      username: root  # 或spring.datasource.username=
+      password:   # 或spring.datasource.password=
+      driver-class-name: com.mysql.cj.jdbc.Driver #或 spring.datasource.driver-class-name=
+# 连接池配置
+      initial-size: 1 #连接池初始大小
+      max-active: 20  #相当于maxPoolSize，最大连接池连接数
+      min-idle: 1     #相当于minPoolSize，最小连接池连接数
+      max-wait: 60000 #获取连接最大等待时间，缺省使用公平锁，
+
+      pool-prepared-statements: false #PSCache是否启动，默认false，oracle建议启用，mysql建议关闭
+      max-pool-prepared-statement-per-connection-size: 100 #要启用PSCache，该设置必须大于0
+      #max-open-prepared-statements   #和上面的等价
+
+      validation-query: select 1 #用来检测连接是否有效的sql,如果为null,则testOnBorrow、testOnReturn、testWhileIdle都不会起作用；
+      #validation-query-timeout: #检测连接是否有效的超时时间，底层是设置statement的setQueryTimeout(int seconds)方法；
+
+      test-on-borrow: false   #指定申请连接时是否执行validation-query检测连接，默认true
+      test-on-return: false   #指定归还连接时是否执行validation-query检测连接，默认false
+      test-while-idle:  true  #如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效，建议配置为true
+
+      time-between-eviction-runs-millis: 60000 #销毁线程时会判断连接空闲时间，超过这个时间则关闭物理连接
+      min-evictable-idle-time-millis: 300000 #连接保持空闲而不被驱逐的最小时间
+# 配置filter
+      filters: stat,log4j2 #配置多个英文逗号分隔
+
+      filter:
+      # 配置StatFilter，统计sql监控信息
+        stat:
+          enabled: true
+          log-slow-sql: true  # 日志输出慢sql
+          slow-sql-millis:  2000 # 超过该时间的慢sql，默认值3000
+      # 配置log4j2Filter，输出jdbc日志，如执行的sql,返回的结果集
+        log4j2:
+          enabled: true
+          connection-log-enabled: false
+          statement-log-enabled: false
+          result-set-log-enabled: true  #是否显示结果集
+          statement-executable-sql-log-enable: true #是否显示执行的sql
+
+# webStatFilter的属性配置，统计web-jdbc的关联监控信息，有默认值
+      web-stat-filter:
+        enabled: true
+        url-pattern: /*
+        exclusions: /*.js,/*.gif,/*.jpg,/*.png,/*.css,/*.ico,/druid/*
+        session-stat-enable: true
+        session-stat-max-count: 1000
+        principal-session-name: dengh
+        principal-cookie-name: dengh
+        profile-enable: true
+
+
+# StatViewServlet属性配置，展示druid的监控，统计信息的页面，有默认值
+      stat-view-servlet:
+        enabled: true #是否启用StatViewServlet（监控页面）默认值为false（考虑到安全问题默认并未启动，如需启用建议设置密码或白名单以保障安全）
+        url-pattern: /druid/*
+        reset-enable: false
+        login-username: admin
+        login-password: admin
+
+
