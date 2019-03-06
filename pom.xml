@@ -79,8 +79,8 @@
 	</build>
 
 	<modules>
-		<module>base-mvc</module>
-		<module>base-data</module>
+		<module>base-web</module>
+		<module>base-provider</module>
 	</modules>
 
 </project>

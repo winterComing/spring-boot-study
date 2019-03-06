@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    status : 这个用于设置log4j2自身内部的信息输出,可以不设置,当设置成trace时,会看到log4j2内部各种详细输出
+    monitorInterval : Log4j能够自动检测修改配置文件和重新配置本身, 设置间隔秒数。此处表示每隔600秒重读一次配置文件
+-->
+<Configuration status="OFF" monitorInterval="600">
+
+    <!--日志级别：TRACE < DEBUG < INFO < WARN < ERROR < FATAL-->
+    <!--如果设置为WARN，则低于WARN的信息都不会输出-->
+    <Properties>
+        <!-- 配置日志文件输出目录,此处为项目根目录下的logs文件夹，${sys:log4j.path}表示读取启动脚本中的log4j.path -->
+        <!--<Property name="LOG_HOME">${sys:log4j.path}/spring-boot-study</Property>-->
+        <Property name="LOG_HOME">${log4j.path}/spring-boot-study</Property>
+        <property name="FILE_NAME">base-mvc</property>
+    </Properties>
+
+    <Appenders>
+        <!--这个输出控制台的配置-->
+        <Console name="Console" target="SYSTEM_OUT">
+            <!--控制台只输出level及其以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+            <!--日志输出的格式-->
+            <!--%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n-->
+            <PatternLayout charset="UTF-8" pattern="|%d{yyyy-MM-dd HH:mm:ss.SSS}|%5p|%5t|%4c:%L|%m%n"/>
+        </Console>
+
+        <!--输出到日志文件中的配置-->
+        <RollingRandomAccessFile name="BASE-MVC" fileName="${LOG_HOME}/${FILE_NAME}.log"
+                                 filePattern="${LOG_HOME}/${FILE_NAME}.log-%d{yyyyMMddHH}">
+            <!--%d{yyyy-MM-dd 'at' HH:mm:ss z} %-5level %class{36} %L %M - %msg%xEx%n-->
+            <PatternLayout charset="UTF-8" pattern="|%d{yyyy-MM-dd HH:mm:ss.SSS}|%5p|%5t|%4c:%L|%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <!--<SizeBasedTriggeringPolicy size="50MB"/>-->
+            </Policies>
+            <DefaultRolloverStrategy max="24"/>
+        </RollingRandomAccessFile>
+    </Appenders>
+
+    <!--然后定义logger，只有定义了logger并引入的appender，才会有相应日志输出，additivity表示父logger是否捕获该日志-->
+    <Loggers>
+
+        <logger name="com.unicom.boot.baseweb" level="debug" additivity="true">
+            <appender-ref ref="BASE-MVC"/>
+        </logger>
+
+        <logger name="druid.sql.Statement" level="DEBUG" additivity="true">
+            <appender-ref ref="BASE-MVC"/>
+        </logger>
+        <logger name="druid.sql.ResultSet" level="DEBUG" additivity="true">
+            <appender-ref ref="BASE-MVC"/>
+        </logger>
+
+        <Root level="debug">
+            <Appender-Ref ref="Console"/>
+        </Root>
+
+    </Loggers>
+
+</Configuration>
